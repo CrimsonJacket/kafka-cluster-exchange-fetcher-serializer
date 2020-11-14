@@ -1,0 +1,16 @@
+{
+  "name": "producer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "producer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel",
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^0.21.0",
+    "kafka-node": "^5.0.0",
+    "ws": "^7.4.0"
+  }
+}

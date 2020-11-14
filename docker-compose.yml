@@ -1,0 +1,102 @@
+version: '3.3'
+
+services:
+
+  producer:
+    image: producer
+    container_name: producer
+    build:
+      context: ./producer
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka1:9091,kafka2:9092,kafka3:9093
+    depends_on:
+      - zookeeper
+    networks:
+      - backend
+
+  consumer:
+    image: consumer
+    container_name: consumer
+    build:
+      context: ./consumer
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: kafka1:9091,kafka2:9092,kafka3:9093
+    depends_on:
+      - zookeeper
+    networks:
+      - backend
+
+  zookeeper:
+    image: confluent/zookeeper:3.4.6-cp1
+    container_name: zookeeper
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - KAFKA_CREATE_TOPICS="midprice.update:3:5"
+    ports:
+      - "2181:2181"
+    networks:
+      - backend
+
+  kafka1:
+    image: confluentinc/cp-kafka:5.1.0
+    container_name: kafka1
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT_HOST://kafka1:9091
+      - KAFKA_LISTENERS=PLAINTEXT_HOST://:9091
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT_HOST
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+    ports:
+      - 9091:9091
+    depends_on:
+      - zookeeper
+    networks:
+      - backend
+
+  kafka2:
+    image: confluentinc/cp-kafka:5.1.0
+    container_name: kafka2
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_BROKER_ID=2
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT_HOST://kafka2:9092
+      - KAFKA_LISTENERS=PLAINTEXT_HOST://:9092
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT_HOST
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    networks:
+      - backend
+
+  kafka3:
+    image: confluentinc/cp-kafka:5.1.0
+    container_name: kafka3
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+      - KAFKA_BROKER_ID=3
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT_HOST://kafka1:9093
+      - KAFKA_LISTENERS=PLAINTEXT_HOST://:9093
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT_HOST
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+    ports:
+      - 9093:9093
+    depends_on:
+      - zookeeper
+    networks:
+      - backend
+
+networks: 
+  backend:
