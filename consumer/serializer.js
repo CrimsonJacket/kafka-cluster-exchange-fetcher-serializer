@@ -9,7 +9,7 @@ const midpriceWriteCb = async (msg) => {
       midprice: data.midPrice,
       timestamp: data.timestamp,
     }
-    console.log(`Message Received: ${JSON.stringify(midprice)}`);
+    console.log(`Received Midprice Update: ${JSON.stringify(midprice)}`);
     return;
   } catch (e) {
     console.log(e.message);

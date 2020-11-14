@@ -2,6 +2,8 @@ const kafka = require("kafka-node");
 
 const Consumer = kafka.Consumer;
 
+console.log(`KAFKA_BROKER_LIST: ${process.env.KAFKA_BROKER_LIST}`);
+
 /**
  * Creates and returns a consumer when passed a kafka topic to subscribe to
  * and a callback that will be invoked when a message is sent to the subscribed topic.
@@ -19,7 +21,7 @@ let createConsumer = (subscribedTopics, onMessageConsumedCb) => {
   });
 
   const consumer = new Consumer(
-    new kafka.KafkaClient({ kafkaHost: process.env.KAFKA_ADVERTISED_HOST_NAME}),
+    new kafka.KafkaClient({ kafkaHost: process.env.KAFKA_BROKER_LIST}),
     topics,
     { encoding: "buffer"}
   );

@@ -1,8 +1,10 @@
 const kafka = require('kafka-node');
 const process = require('process');
 
+console.log(`KAFKA_BROKER_LIST: ${process.env.KAFKA_BROKER_LIST}`);
+
 const
-  client = new kafka.KafkaClient({ kafkaHost: process.env.KAFKA_ADVERTISED_HOST_NAME }),
+  client = new kafka.KafkaClient({ kafkaHost: process.env.KAFKA_BROKER_LIST }),
   producer = new kafka.HighLevelProducer(client);
 
 /**
